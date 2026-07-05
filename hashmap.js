@@ -4,7 +4,10 @@ class HashMap {
     constructor(){
         this.loadFactor = 0.75
         this.capacity = 16
-        this.buckets = Array(this.capacity).fill({"empty_key": "empty_value"})
+        this.buckets = Array(this.capacity)
+        for (let i = 0;i < this.capacity; i++){
+            this.buckets[i] = new LinkedList
+        }
     }
 
     checkIndex(index){
@@ -14,21 +17,33 @@ class HashMap {
     }
 
     hash(key) {
-    let hashCode = 0;
+        let hashCode = 0;
+        const primeNumber = 31;
 
-    const primeNumber = 31;
-    for (let i = 0; i < key.length; i++) {
-        hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % this.capacity;
-    }
-
-    return hashCode;
+        for (let i = 0; i < key.length; i++) {
+            hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % this.capacity;
+        }
+        return hashCode;
     }
 
     set(key, value){
-        //if hash is the same and the key is the same, replace the value
-        //if the hash is the same and the key is different, use a linked list to store the duplicate
+        const hashedKey = this.hash(key)
+        this.checkIndex(hashedKey)
+
+        const bucket = this.buckets[hashedKey]
+
+        if (bucket.size()>= 1){
+            for (let i = 0; i<bucket.size(); i++){
+                const existingKey = Object.keys(bucket.at(i))[0]
+                if (key == existingKey){
+                    bucket.at(i)[key] = value
+                    return
+                }
+            }
+        }
+        bucket.append({[key]:value})
         
         //if the capacity reaches the load factor, grow the buckets 
-        // buckets.length >= this.capacity * this.loadFactor
+        //buckets.length >= this.capacity * this.loadFactor
     }
 }
