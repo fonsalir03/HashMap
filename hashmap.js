@@ -46,4 +46,32 @@ class HashMap {
         //if the capacity reaches the load factor, grow the buckets 
         //buckets.length >= this.capacity * this.loadFactor
     }
+
+    get(key){
+        const hKey = this.hash(key)
+        this.checkIndex(hKey)
+        const bucket = this.buckets[hKey]
+        let value = undefined
+
+        if (bucket.size() == 1){
+            value = bucket.head()[key]
+        }else {
+            for (let i = 0; i < bucket.size(); i++){
+                const currentValPair = bucket.at(i)
+                const collidedKey = Object.keys(currentValPair)[0]
+                if (key==collidedKey){
+                    value = currentValPair[collidedKey]
+                }
+            }
+        }
+
+        return value ? value :  null
+    }
+
+    has(key){
+        const hKey = this.hash(key)
+        this.checkIndex(hKey)
+        const bucket = this.buckets[hKey]
+        return bucket.head() ? true : false
+    }
 }
