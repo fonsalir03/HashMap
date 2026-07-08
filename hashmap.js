@@ -26,6 +26,16 @@ class HashMap {
         return hashCode;
     }
 
+        findCollision(bucketWithCollision, keyToFind){
+        for (let i = 0; i < bucketWithCollision.size(); i++){
+            const currentValPair = bucketWithCollision.at(i)
+            const key = Object.keys(currentValPair)[0]
+            if (keyToFind==key){
+                return {"index": i, "valuePair": currentValPair}
+            }
+        }
+    }
+
     set(key, value){
         const hashedKey = this.hash(key)
         this.checkIndex(hashedKey)
@@ -55,14 +65,9 @@ class HashMap {
 
         if (bucket.size() == 1){
             value = bucket.head()[key]
-        }else {
-            for (let i = 0; i < bucket.size(); i++){
-                const currentValPair = bucket.at(i)
-                const collidedKey = Object.keys(currentValPair)[0]
-                if (key==collidedKey){
-                    value = currentValPair[collidedKey]
-                }
-            }
+        }else if (bucket.size()>1){
+            const cValueAndIndex = this.findCollision(bucket, key)
+            value = cValueAndIndex["valuePair"][key]
         }
 
         return value ? value :  null
@@ -74,4 +79,58 @@ class HashMap {
         const bucket = this.buckets[hKey]
         return bucket.head() ? true : false
     }
+
+    remove(key){
+
+        const hKey = this.hash(key)
+        const bucket = this.buckets[hKey]
+        if (bucket.size()==0){
+            return false
+        }else if (bucket.size() == 1){
+            bucket.removeAt(0)
+        }else if (bucket.size() > 1){
+            const cValuePairAndIndex = this.findCollision(bucket, key)
+            bucket.removeAt(cValuePairAndIndex["index"])
+        }
+
+        return true
+
+    }
+
+    length(){
+        //counter
+        //iterate through the hashmap, increasing counter through each step
+        //if an item size is greater than 1, iterate though those as well
+    }
+
+    clear(){
+        //same code from the constructor...?
+    }
+
+    entries(){
+        //holder array
+        //iterate through the hashmap
+        //if size is 1, push pair
+        //if size is greater than 1, iterate through linked list, pushing each pair
+        //return array
+    }
+
+    keys(){
+        //Object.keys()
+
+        //holder array
+        //iterate through the hashmap
+        //if size is 1, push the key
+        //if size is greater than 1, iterate through that linked list while pushing each key
+    }
+
+    values(){
+        //Object.values()
+
+        //holder array
+        //iterate through the hashmap
+        // if size is 1, push the value 
+        // if size greater than 1, iterate through that linked list while pushing each value
+    }
+
 }
