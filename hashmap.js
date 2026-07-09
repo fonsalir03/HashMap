@@ -34,6 +34,18 @@ class HashMap {
         }
     }
 
+    growBuckets(){
+        const valuePairs = this.entries()
+        this.capacity = this.capacity * 2
+        this.clear()
+
+        for (let i = 0; i < valuePairs.length; i++){
+            let key = valuePairs[i][0]
+            let value = valuePairs[i][1]
+            this.set(key, value)
+        }
+    }
+
     set(key, value){
         const hashedKey = this.hash(key)
         this.checkIndex(hashedKey)
@@ -51,8 +63,9 @@ class HashMap {
         }
         bucket.append({[key]:value})
         
-        //if the capacity reaches the load factor, grow the buckets 
-        //buckets.length >= this.capacity * this.loadFactor
+        if (this.length() > this.capacity * this.loadFactor){
+            this.growBuckets()
+        }
     }
 
     get(key){
