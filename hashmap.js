@@ -5,9 +5,7 @@ class HashMap {
         this.loadFactor = 0.75
         this.capacity = 16
         this.buckets = Array(this.capacity)
-        for (let i = 0;i < this.capacity; i++){
-            this.buckets[i] = new LinkedList
-        }
+        this.clear()
     }
 
     checkIndex(index){
@@ -97,40 +95,45 @@ class HashMap {
 
     }
 
-    length(){
-        //counter
-        //iterate through the hashmap, increasing counter through each step
-        //if an item size is greater than 1, iterate though those as well
+    length(){   
+        let counter = 0
+        for (let i = 0; i<this.capacity;i++){
+            counter += this.buckets[i].size()
+        }
+        return counter
     }
 
     clear(){
-        //same code from the constructor...?
+        for (let i = 0;i < this.capacity; i++){
+            this.buckets[i] = new LinkedList
+        }
     }
 
     entries(){
-        //holder array
-        //iterate through the hashmap
-        //if size is 1, push pair
-        //if size is greater than 1, iterate through linked list, pushing each pair
-        //return array
+        const valuePairs = []
+        for(let i = 0; i < this.capacity; i++){
+            const currentBucket = this.buckets[i]
+            if (currentBucket.size()==1){
+                const key = Object.keys(currentBucket.head())[0]
+                const value = Object.values(currentBucket.head())[0]
+                valuePairs.push([key, value])
+            }else if (currentBucket.size() > 1){
+                for (let i = 0; i < currentBucket.size(); i++){
+                const key = Object.keys(currentBucket.at(i))[0]
+                const value = Object.values(currentBucket.at(i))[0]
+                valuePairs.push([key, value])
+                }
+            }
+        }
+        return valuePairs
     }
 
     keys(){
-        //Object.keys()
-
-        //holder array
-        //iterate through the hashmap
-        //if size is 1, push the key
-        //if size is greater than 1, iterate through that linked list while pushing each key
+        return this.entries().map((pair)=> pair[0])
     }
 
     values(){
-        //Object.values()
-
-        //holder array
-        //iterate through the hashmap
-        // if size is 1, push the value 
-        // if size greater than 1, iterate through that linked list while pushing each value
+        return this.entries().map((pair)=> pair[1])
     }
 
 }
