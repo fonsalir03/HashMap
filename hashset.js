@@ -28,6 +28,14 @@ class HashSet {
         this.checkIndex(hashedKey)
 
         const bucket = this.buckets[hashedKey]
+        if (bucket.size()>= 1){
+            for (let i = 0; i<bucket.size(); i++){
+                const existingKey = bucket.at(i)
+                if (key == existingKey){
+                    return
+                }
+            }
+        }
         bucket.append(key)
         
         if (this.length() > this.capacity * this.loadFactor){
@@ -48,8 +56,41 @@ class HashSet {
         }
         return counter
     }
+    has(key){
+        const hKey = this.hash(key)
+        this.checkIndex(hKey)
+        const bucket = this.buckets[hKey]
+        return bucket.head() ? true : false
+    }
+
+    findCollision(bucketWithCollision, keyToFind){
+        for (let i = 0; i < bucketWithCollision.size(); i++){
+            const currentKeyNode = bucketWithCollision.at(i)
+            if (keyToFind==currentKeyNode){
+                return i
+            }
+        }
+    }
+
+    remove(key){
+        const hKey = this.hash(key)
+        const bucket = this.buckets[hKey]
+        if (bucket.size()==0){
+            return false
+        }else if (bucket.size() == 1){
+            bucket.removeAt(0)
+        }else if (bucket.size() > 1){
+            const keyNodeIndex = this.findCollision(bucket, key)
+            bucket.removeAt(keyNodeIndex)
+        }
+        return true
+
+    }
 }
 
 const hs = new HashSet()
-hs.set("firstKey")
-console.log(hs.buckets[15].head())
+//collisions
+hs.set("aaaa")
+hs.set("aa")
+hs.remove("aa")
+console.log(hs.buckets[0].size())
