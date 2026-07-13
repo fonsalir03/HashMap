@@ -86,11 +86,31 @@ class HashSet {
         return true
 
     }
-}
+    keys(){
+        const keys = []
+        for(let i = 0; i < this.capacity; i++){
+            const currentBucket = this.buckets[i]
+            if (currentBucket.size()==1){
+                const key = currentBucket.head()
+                keys.push(key)
+            }else if (currentBucket.size() > 1){
+                for (let i = 0; i < currentBucket.size(); i++){
+                    const key = currentBucket.at(i)
+                    keys.push(key)
+                }
+            }
+        }
+        return keys
+    }
 
-const hs = new HashSet()
-//collisions
-hs.set("aaaa")
-hs.set("aa")
-hs.remove("aa")
-console.log(hs.buckets[0].size())
+    growBuckets(){
+        const keys = this.keys()
+        this.capacity = this.capacity * 2
+        this.clear()
+
+        for (let i = 0; i < keys.length; i++){
+            let key = keys[i]
+            this.set(key)
+        }
+    }
+}
